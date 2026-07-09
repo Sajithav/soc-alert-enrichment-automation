@@ -1,0 +1,4 @@
+index="automationsoc" EventCode="4625"
+| stats count as failed_attempts values(user) as attacker values(ComputerName) as affected_device values(EventCode) as eventcode by src_ip
+| where failed_attempts > 10
+| table src_ip attacker affected_device eventcode
