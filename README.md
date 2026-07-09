@@ -2,6 +2,8 @@
 
 This project demonstrates a SOC automation workflow using Splunk, n8n, OpenAI API, Slack, and MITRE ATT&CK.
 
+Disclaimer: This project was developed in a controlled lab environment for cybersecurity learning and demonstration purposes. All identifiers (IP addresses, usernames, hostnames, credentials, and URLs) have been anonymized or replaced with sample values before publication.
+
 ## Overview
 
 A Splunk alert detects suspicious activity from Windows security logs. The alert triggers an n8n webhook, which sends the alert details to OpenAI for enrichment. OpenAI maps the activity to MITRE ATT&CK techniques and provides investigation and response steps. The final enriched alert is sent to a Slack SOC channel.
