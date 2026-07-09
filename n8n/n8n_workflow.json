@@ -1,0 +1,128 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "19891d72-fa3d-494e-bb3c-af28447f407b",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -352,
+        -48
+      ],
+      "id": "771ec0ee-e4b5-4a4b-a8a0-0478e6a81704",
+      "name": "Webhook",
+      "webhookId": "19891d72-fa3d-494e-bb3c-af28447f407b"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "GPT-4.1-MINI"
+        },
+        "responses": {
+          "values": [
+            {
+              "content": "Act as a Tier 1 SOC analyst assistant.\nWhen provided with a security alert or incident details (including indicators of compromise, logs, or metadata), perform the following steps:\n\n1. Summarize the alert – Provide a clear summary of what triggered the alert, which systems/users are affected, and the nature of the activity (e.g., suspicious login, malware detection, lateral movement).\n\n2. Enrich with threat intelligence – Do IP encrichment, Correlate any IOCs (IP addresses, domains, hashes) with known threat intel sources. Highlight if the indicators are associated with known malware or threat actors.\n\n3. Assess severity – Based on MITRE ATT&CK mapping, identify tactics/techniques, and provide an initial severity rating (Low, Medium, High, Critical).\n\n4. Recommend next actions – Suggest investigation steps and potential containment actions."
+            },
+            {
+              "role": "system",
+              "content": "Format output clearly – Return findings\nin a structured format (Summary, IOC\nEnrichment, Severity Assessment,\nRecommended Actions)."
+            },
+            {
+              "content": "=Alert: {{ $json.body.search_name }}\nAlert Details: {{JSON.stringify($json.body.result,['src_ip','attacker','affected_device','eventcode'],2)}}"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        64,
+        -48
+      ],
+      "id": "d3944f5b-d155-412c-b9ce-8e43c97fc1e8",
+      "name": "Message a model",
+      "credentials": {
+        "openAiApi": {
+          "id": "DSzrvUy5dGSkXYFM",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0BEZFHA8AK",
+          "mode": "list",
+          "cachedResultName": "alerts"
+        },
+        "text": "={{ $json.output[0].content[0].text }}",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.5,
+      "position": [
+        512,
+        -48
+      ],
+      "id": "8799eaa9-3bcc-4e0d-96f0-64450f3dba2d",
+      "name": "Send a message",
+      "webhookId": "1b8f8796-5df4-4e16-9d78-d512f78c70b0",
+      "credentials": {
+        "slackApi": {
+          "id": "GLTgQkOAfgOUmATU",
+          "name": "Slack account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "7ce5e0e7-353a-4bde-ac1e-7794b8da6714",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6b82a7264fda77101884b3cbc2d321898bd72fc06dccfd00b4d311d5b73767fa"
+  },
+  "nodeGroups": [],
+  "id": "faCrGe2ZrYy9bEtL",
+  "tags": []
+}
